@@ -1,4 +1,4 @@
-using DotNetMetadataMcpServer.Configuration;
+/*using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
 using DotNetMetadataMcpServer.ToolHandlers;
@@ -334,4 +334,4 @@ public class NuGetToolHandlersTests
             parameters.PageNumber,
             It.IsAny<int>()), Times.Once);
     }
-}
+}*/

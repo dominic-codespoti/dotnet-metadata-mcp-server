@@ -1,5 +1,6 @@
 using DotNetMetadataMcpServer;
 using DotNetMetadataMcpServer.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace MetadataExplorerTest
 {
@@ -56,7 +57,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_FiltersByAllowedNamespaces_AndPaginates()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string> { "MyNamespace" };
             var filters = new List<string>(); // no additional filter
             int pageNumber = 1;
@@ -76,7 +77,7 @@ namespace MetadataExplorerTest
         public void NamespaceToolService_FiltersByAllowedAssemblyNames_AndPaginates()
         {
             // Arrange
-            var service = new NamespaceToolService(_fakeScanner);
+            var service = new NamespaceToolService(_fakeScanner, new NullLogger<NamespaceToolService>());
             // Main assembly is allowed and dependency is allowed.
             var allowedAssemblyNames = new List<string> { "MyMainAssembly.dll", "DepAssembly.dll" };
             var filters = new List<string>(); // no additional filter
@@ -99,7 +100,7 @@ namespace MetadataExplorerTest
         public void AssemblyToolService_AppliesFilter_AndPaginates()
         {
             // Arrange
-            var service = new AssemblyToolService(_fakeScanner);
+            var service = new AssemblyToolService(_fakeScanner, new NullLogger<AssemblyToolService>());
             // Use filter to match dependency assembly only.
             var filters = new List<string> { "Dep*" };
             int pageNumber = 1;
@@ -119,7 +120,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldReturnAllTypes_WhenNoAllowedNamespacesAndNoFilters()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string>();
             var filters = new List<string>();
             int pageNumber = 1, pageSize = 10;
@@ -135,7 +136,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldApplyWildcardFilter_IgnoringCase()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string>();
             var filters = new List<string> { "MY*" };
             int pageNumber = 1, pageSize = 10;
@@ -151,7 +152,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldHandleMultipleAllowedNamespaces()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string> { "MyNamespace", "DepNamespace" };
             var filters = new List<string>();
             int pageNumber = 1, pageSize = 10;
@@ -167,7 +168,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldHandleEmptyResults()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string>();
             var filters = new List<string> { "NonExistent*" };
             int pageNumber = 1, pageSize = 10;
@@ -183,7 +184,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldHandleCombinedFilters()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             // Multiple filters: one matching 'MyNamespace.MyType', another for 'DepNamespace.DepType'
             var allowedNamespaces = new List<string>();
             var filters = new List<string> { "My*", "Dep*" };
@@ -200,7 +201,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldReturnEmpty_WhenPageNumberIsNegative()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string> { "MyNamespace" };
             var filters = new List<string> { "My*" };
             int pageNumber = -1, pageSize = 10;
@@ -217,7 +218,7 @@ namespace MetadataExplorerTest
         public void TypeToolService_ShouldReturnEmpty_WhenPageSizeIsZero()
         {
             // Arrange
-            var service = new TypeToolService(_fakeScanner);
+            var service = new TypeToolService(_fakeScanner, new NullLogger<TypeToolService>());
             var allowedNamespaces = new List<string>();
             var filters = new List<string>(); // no filter
             int pageNumber = 1, pageSize = 0;

@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization.Metadata;
+/*using System.Text.Json.Serialization.Metadata;
 using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
@@ -65,4 +65,4 @@ public class NamespaceToolHandler(
     }
 
     public override JsonTypeInfo JsonTypeInfo => NamespaceToolParametersJsonContext.Default.NamespaceToolParameters;
-}
+}*/

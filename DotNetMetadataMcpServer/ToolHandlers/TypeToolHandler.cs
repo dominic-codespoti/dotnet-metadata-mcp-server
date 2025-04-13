@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization.Metadata;
+/*using System.Text.Json.Serialization.Metadata;
 using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
@@ -63,4 +63,4 @@ public class TypeToolHandler(
     }
 
     public override JsonTypeInfo JsonTypeInfo => TypeToolParametersJsonContext.Default.TypeToolParameters;
-}
+}*/

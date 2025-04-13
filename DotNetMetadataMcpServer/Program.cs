@@ -1,8 +1,8 @@
+using System.Text.Json;
 using DotNetMetadataMcpServer.Configuration;
+using DotNetMetadataMcpServer.ConfigurationExtensions;
 using DotNetMetadataMcpServer.Services;
-using DotNetMetadataMcpServer.ToolHandlers;
-using ModelContextProtocol.NET.Core.Models.Protocol.Common;
-using ModelContextProtocol.NET.Server.Builder;
+using ModelContextProtocol.Protocol.Types;
 using Serilog;
 
 namespace DotNetMetadataMcpServer;
@@ -43,14 +43,42 @@ public class Program
         try
         {
             logger.Information("Starting the server");
+
+            var toolsConfiguration = configuration.GetSection(ToolsConfiguration.SectionName).Get<ToolsConfiguration>();
+            if (toolsConfiguration == null)
+            {
+                logger.Error("Tools configuration is missing");
+                return 1;
+            }
+            
+            
+            var builder = Host.CreateApplicationBuilder();
+
             
             var serverInfo = new Implementation
             {
                 Name = "DotNet Projects Types Explorer MCP Server",
                 Version = "1.0.0"
             };
-        
-            var builder = new McpServerBuilder(serverInfo).AddStdioTransport();
+            var mcpBuilder = builder.Services.AddMcpServer(options =>
+            {
+                options.ServerInfo = serverInfo;
+            });
+            mcpBuilder.WithStdioServerTransport();
+            
+            var jsonSerializerOptions = toolsConfiguration.IntendResponse 
+                ? new JsonSerializerOptions { WriteIndented = true } 
+                : new JsonSerializerOptions { WriteIndented = false };
+
+            mcpBuilder.WithScopedTools(
+            [
+                typeof(AssemblyToolService),
+                typeof(NamespaceToolService),
+                typeof(TypeToolService),
+                typeof(NuGetToolService)
+            ], jsonSerializerOptions);
+            
+            
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
             
             builder.Services.Configure<ToolsConfiguration>(configuration.GetSection(ToolsConfiguration.SectionName));
@@ -64,17 +92,8 @@ public class Program
             builder.Services.AddScoped<TypeToolService>();
             builder.Services.AddScoped<NuGetToolService>();
             
-
-            builder.Tools.AddHandler<AssemblyToolHandler>();
-            builder.Tools.AddHandler<NamespaceToolHandler>();
-            builder.Tools.AddHandler<TypeToolHandler>();
-            builder.Tools.AddHandler<NuGetPackageSearchToolHandler>();
-            builder.Tools.AddHandler<NuGetPackageVersionsToolHandler>();
             
-            var host = builder.Build();
-            host.Start();
-            await Task.Delay(-1);
-
+            await builder.Build().RunAsync();
             return 0;
         }
         catch (Exception ex)
@@ -90,49 +109,4 @@ public class Program
             await Log.CloseAndFlushAsync();
         }
     }
-    
-    // todo: refactor to use the new builder
-    /*public static async Task Main(string[] args)
-    {
-        var logger = new LoggerConfiguration()
-            .WriteTo.File("log.txt")
-            .MinimumLevel.Debug()
-            .CreateLogger();
-        Log.Logger = logger; 
-        
-        try
-        {
-            var serverInfo = new Implementation
-            {
-                Name = "DotNet Projects Types Explorer MCP Server",
-                Version = "1.0.0"
-            };
-        
-            var builder = Host.CreateApplicationBuilder();
-            
-            builder.Services.AddMcpServer(serverInfo, mcp => {
-                mcp.AddStdioTransport();
-                mcp.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                mcp.Tools.AddHandler<DotNetProjectTypesExplorerToolHandler>();
-            }, keepDefaultLogging: false);
-            
-            builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-            
-            builder.Services.AddScoped<MsBuildHelper>();
-            builder.Services.AddScoped<ReflectionTypesCollector>();
-            builder.Services.AddScoped<DependenciesScanner>();
-            builder.Services.AddScoped<DotNetProjectTypesExplorerToolHandler>();
-
-            var host = builder.Build();
-            await host.RunAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-        finally
-        {
-            await Log.CloseAndFlushAsync();
-        }
-    }*/
 }

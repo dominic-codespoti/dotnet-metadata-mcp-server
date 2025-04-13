@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using DotNetMetadataMcpServer.Helpers;
 using DotNetMetadataMcpServer.Models;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Server;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol;
@@ -9,6 +11,7 @@ using NuGet.Versioning;
 
 namespace DotNetMetadataMcpServer.Services
 {
+    [McpServerToolType]
     public class NuGetToolService
     {
         private readonly ILogger<NuGetToolService> _logger;
@@ -26,12 +29,14 @@ namespace DotNetMetadataMcpServer.Services
             _repository = Repository.Factory.GetCoreV3("https://api.nuget.org/v3/index.json");
         }
 
+        [McpServerTool(Name = "NuGetPackageSearch")] 
+        [Description("Searches for NuGet packages on nuget.org with support for filtering and pagination.")]
         public async Task<NuGetPackageSearchResponse> SearchPackagesAsync(
-            string searchQuery, 
-            List<string> filters, 
-            bool includePrerelease, 
-            int pageNumber, 
-            int pageSize)
+            [Description("TODO")] string searchQuery, 
+            [Description("TODO")] List<string> filters, 
+            [Description("TODO")] bool includePrerelease, 
+            [Description("TODO")] int pageNumber, 
+            [Description("TODO")] int pageSize)
         {
             _logger.LogInformation("Searching NuGet packages with query: {Query}, includePrerelease: {IncludePrerelease}", 
                 searchQuery, includePrerelease);
@@ -97,12 +102,14 @@ namespace DotNetMetadataMcpServer.Services
             }
         }
 
+        [McpServerTool(Name = "NuGetPackageVersions")] 
+        [Description("Retrieves version history and dependency information for a specific NuGet package.")]
         public async Task<NuGetPackageVersionsResponse> GetPackageVersionsAsync(
-            string packageId, 
-            List<string> filters, 
-            bool includePrerelease, 
-            int pageNumber, 
-            int pageSize)
+            [Description("TODO")] string packageId, 
+            [Description("TODO")] List<string> filters, 
+            [Description("TODO")] bool includePrerelease, 
+            [Description("TODO")] int pageNumber, 
+            [Description("TODO")] int pageSize)
         {
             _logger.LogInformation("Getting versions for NuGet package: {PackageId}, includePrerelease: {IncludePrerelease}", 
                 packageId, includePrerelease);

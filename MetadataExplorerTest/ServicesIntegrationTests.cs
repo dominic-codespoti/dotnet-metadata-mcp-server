@@ -1,6 +1,7 @@
 using DotNetMetadataMcpServer;
 using DotNetMetadataMcpServer.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace MetadataExplorerTest;
@@ -37,7 +38,7 @@ public class ServicesIntegrationTests
     [Test, Order(1)]
     public void AssemblyToolService_ShouldReturnAssemblies()
     {
-        var service = new AssemblyToolService(_scanner);
+        var service = new AssemblyToolService(_scanner, new NullLogger<AssemblyToolService>());
         var response = service.GetAssemblies(_testProjectPath, new List<string>(), 1, 50);
 
         Assert.That(response.AssemblyNames, Is.Not.Null);
@@ -51,7 +52,7 @@ public class ServicesIntegrationTests
     {
         Assert.That(_foundAssemblies, Is.Not.Null, "Previous test must be run first");
         
-        var service = new NamespaceToolService(_scanner);
+        var service = new NamespaceToolService(_scanner, new NullLogger<NamespaceToolService>());
         var response = service.GetNamespaces(_testProjectPath, _foundAssemblies, new List<string>(), 1, 50);
 
         Assert.That(response.Namespaces, Is.Not.Null);
@@ -65,7 +66,7 @@ public class ServicesIntegrationTests
     {
         Assert.That(_foundNamespaces, Is.Not.Null, "Previous tests must be run first");
         
-        var service = new TypeToolService(_scanner);
+        var service = new TypeToolService(_scanner, new NullLogger<TypeToolService>());
         var response = service.GetTypes(_testProjectPath, _foundNamespaces, new List<string>(), 1, 50);
 
         Assert.That(response.TypeData, Is.Not.Null);

@@ -1,6 +1,7 @@
 using DotNetMetadataMcpServer;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace MetadataExplorerTest.Services;
 
@@ -18,7 +19,7 @@ public class TypeToolServiceTests
         var relativePath = Path.Combine(testDirectory, "../../../../DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj");
         _testProjectPath = Path.GetFullPath(relativePath);
         _scanner = new DependenciesScanner(new MsBuildHelper(), new ReflectionTypesCollector());
-        _service = new TypeToolService(_scanner);
+        _service = new TypeToolService(_scanner, new NullLogger<TypeToolService>());
     }
 
     [TearDown]

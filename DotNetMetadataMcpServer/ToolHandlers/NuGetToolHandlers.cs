@@ -1,4 +1,4 @@
-using System.Text.Json;
+/*using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
@@ -121,4 +121,4 @@ namespace DotNetMetadataMcpServer.ToolHandlers
 
         public override JsonTypeInfo JsonTypeInfo => NuGetPackageVersionParametersJsonContext.Default.NuGetPackageVersionParameters;
     }
-}
+}*/

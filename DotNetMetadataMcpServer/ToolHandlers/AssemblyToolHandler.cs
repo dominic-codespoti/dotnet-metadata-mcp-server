@@ -1,8 +1,9 @@
-using System.Text.Json;
+/*using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
+using Microsoft.Extensions.AI;
 using ModelContextProtocol.NET.Server.Features.Tools;
 using ModelContextProtocol.NET.Server.Session;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using ModelContextProtocol.NET.Core.Models.Protocol.Client.Responses;
 using ModelContextProtocol.NET.Core.Models.Protocol.Common;
 using ModelContextProtocol.NET.Core.Models.Protocol.Shared.Content;
 using ModelContextProtocol.NET.Server.Contexts;
+using ModelContextProtocol.Protocol.Types;
 
 namespace DotNetMetadataMcpServer.ToolHandlers
 {
@@ -68,4 +70,4 @@ namespace DotNetMetadataMcpServer.ToolHandlers
 
         public override JsonTypeInfo JsonTypeInfo => AssemblyToolParametersJsonContext.Default.AssemblyToolParameters;
     }
-}
+}*/

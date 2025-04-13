@@ -17,12 +17,15 @@
         <!--<PackageReference Include="Microsoft.Build" Version="17.12.6" ExcludeAssets="runtime" />-->
         <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
         
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
         <!--<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />-->
 
         <PackageReference Include="DependencyGraph.Core" Version="1.0.1" />
-        <PackageReference Include="ModelContextProtocol.NET.Server.Hosting" Version="0.3.2-alpha" />
+
+        <PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.8" />
+        
+        <!--<PackageReference Include="ModelContextProtocol.NET.Server.Hosting" Version="0.3.2-alpha" />-->
         
         <PackageReference Include="NuGet.Configuration" Version="6.13.2" />
         <PackageReference Include="NuGet.Protocol" Version="6.13.2" />

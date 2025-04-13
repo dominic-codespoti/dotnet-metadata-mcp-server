@@ -1,5 +1,6 @@
 using DotNetMetadataMcpServer;
 using DotNetMetadataMcpServer.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace MetadataExplorerTest.Services;
 
@@ -17,7 +18,7 @@ public class NamespaceToolServiceTests
         var relativePath = Path.Combine(testDirectory, "../../../../DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj");
         _testProjectPath = Path.GetFullPath(relativePath);
         _scanner = new DependenciesScanner(new MsBuildHelper(), new ReflectionTypesCollector());
-        _service = new NamespaceToolService(_scanner);
+        _service = new NamespaceToolService(_scanner, new NullLogger<NamespaceToolService>());
     }
 
     [TearDown]
