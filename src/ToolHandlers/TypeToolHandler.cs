@@ -7,15 +7,18 @@ using ModelContextProtocol.Server;
 
 namespace DotNetMetadataMcpServer.ToolHandlers;
 
+[McpServerToolType]
 public static class TypeToolHandler
 {
-    [McpServerTool, Description("Retrieves types from specified namespaces supporting filters and pagination.")]
+    [Description("Retrieves types from specified namespaces supporting filters and pagination.")]
+    [McpServerTool(Name = "TypeToolHandler")]
     public static string HandleAsync(
         [Description("The type tool parameters to use for the request")] TypeToolParameters parameters,
-        IOptions<ToolsConfiguration> toolsConfiguration,
-        TypeToolService typeToolService,
-        ILoggerFactory loggerFactory)
+        IServiceProvider serviceProvider)
     {
+        var toolsConfiguration = serviceProvider.GetRequiredService<IOptions<ToolsConfiguration>>();
+        var typeToolService = serviceProvider.GetRequiredService<TypeToolService>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger(typeof(TypeToolHandler));
         logger.LogInformation("Received request to retrieve types with {Parameters}", parameters);
 

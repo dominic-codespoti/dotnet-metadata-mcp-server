@@ -7,15 +7,18 @@ using ModelContextProtocol.Server;
 
 namespace DotNetMetadataMcpServer.ToolHandlers;
 
+[McpServerToolType]
 public static class NamespaceToolHandler
 {
-    [McpServerTool, Description("Retrieves namespaces from specified assemblies supporting filters and pagination (doesn't extract data from referenced projects. Notice that the project must be built before scanning.")]
+    [Description("Retrieves namespaces from specified assemblies supporting filters and pagination (doesn't extract data from referenced projects. Notice that the project must be built before scanning.")]
+    [McpServerTool(Name = "NamespaceToolHandler")]
     public static string HandleAsync(
         [Description("The namespace parameters to use for the request")] NamespaceToolParameters parameters,
-        IOptions<ToolsConfiguration> toolsConfiguration,
-        NamespaceToolService namespaceToolService,
-        ILoggerFactory loggerFactory)
+        IServiceProvider serviceProvider)
     {
+        var toolsConfiguration = serviceProvider.GetRequiredService<IOptions<ToolsConfiguration>>();
+        var namespaceToolService = serviceProvider.GetRequiredService<NamespaceToolService>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger(typeof(NamespaceToolHandler));
         logger.LogInformation("Received request to retrieve namespaces with {Parameters}", parameters);
 

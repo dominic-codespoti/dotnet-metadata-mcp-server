@@ -17,14 +17,14 @@ builder.Services.AddLogging(loggingBuilder =>
 
 builder.Services.Configure<ToolsConfiguration>(configuration.GetSection(ToolsConfiguration.SectionName));
 
-builder.Services.AddScoped<MsBuildHelper>();
-builder.Services.AddScoped<ReflectionTypesCollector>();
-builder.Services.AddScoped(typeof(IDependenciesScanner), typeof(DependenciesScanner));
+builder.Services.AddSingleton<MsBuildHelper>();
+builder.Services.AddSingleton<ReflectionTypesCollector>();
+builder.Services.AddSingleton(typeof(IDependenciesScanner), typeof(DependenciesScanner));
 
-builder.Services.AddScoped<AssemblyToolService>();
-builder.Services.AddScoped<NamespaceToolService>();
-builder.Services.AddScoped<TypeToolService>();
-builder.Services.AddScoped<NuGetToolService>();
+builder.Services.AddSingleton<AssemblyToolService>();
+builder.Services.AddSingleton<NamespaceToolService>();
+builder.Services.AddSingleton<TypeToolService>();
+builder.Services.AddSingleton<NuGetToolService>();
 
 builder.Services
     .AddMcpServer()

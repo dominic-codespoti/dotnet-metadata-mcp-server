@@ -7,15 +7,18 @@ using ModelContextProtocol.Server;
 
 namespace DotNetMetadataMcpServer.ToolHandlers;
 
+[McpServerToolType]
 public static class NuGetToolHandlers
 {
-    [McpServerTool, Description("Searches for NuGet packages on nuget.org with support for filtering and pagination.")]
+    [Description("Searches for NuGet packages on nuget.org with support for filtering and pagination.")]
+    [McpServerTool(Name = "NuGetPackageSearchToolHandler")]
     public static async Task<string> NuGetPackageSearchHandleAsync(
         [Description("The NuGet package search parameters")] NuGetPackageSearchParameters parameters,
-        IOptions<ToolsConfiguration> toolsConfiguration,
-        NuGetToolService nuGetToolService,
-        ILoggerFactory loggerFactory)
+        IServiceProvider serviceProvider)
     {
+        var toolsConfiguration = serviceProvider.GetRequiredService<IOptions<ToolsConfiguration>>();
+        var nuGetToolService = serviceProvider.GetRequiredService<NuGetToolService>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger("NuGetPackageSearchToolHandler");
         logger.LogInformation("Received request to search NuGet packages with {Parameters}", parameters);
 
@@ -38,13 +41,15 @@ public static class NuGetToolHandlers
         return toolsConfiguration.Value.Serialize(result);
     }
 
-    [McpServerTool, Description("Retrieves version history and dependency information for a specific NuGet package.")]
+    [Description("Retrieves version history and dependency information for a specific NuGet package.")]
+    [McpServerTool(Name = "NuGetPackageVersionsToolHandler")]
     public static async Task<string> NuGetPackageVersionsHandleAsync(
         [Description("The NuGet package version parameters")] NuGetPackageVersionParameters parameters,
-        IOptions<ToolsConfiguration> toolsConfiguration,
-        NuGetToolService nuGetToolService,
-        ILoggerFactory loggerFactory)
+        IServiceProvider serviceProvider)
     {
+        var toolsConfiguration = serviceProvider.GetRequiredService<IOptions<ToolsConfiguration>>();
+        var nuGetToolService = serviceProvider.GetRequiredService<NuGetToolService>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger("NuGetPackageVersionsToolHandler");
         logger.LogInformation("Received request to get NuGet package versions with {Parameters}", parameters);
 

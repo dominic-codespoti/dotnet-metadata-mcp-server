@@ -7,15 +7,18 @@ using ModelContextProtocol.Server;
 
 namespace DotNetMetadataMcpServer.ToolHandlers;
 
+[McpServerToolType]
 public static class AssemblyToolHandler
 {
-    [McpServerTool, Description("Retrieves referenced assemblies based on filters and pagination (doesn't extract data from referenced projects. Notice that the project must be built before scanning.")]
+    [Description("Retrieves referenced assemblies based on filters and pagination (doesn't extract data from referenced projects. Notice that the project must be built before scanning.")]
+    [McpServerTool(Name = "AssemblyToolHandler")]
     public static string HandleAsync(
         [Description("The assembly parameters to use for the request")] AssemblyToolParameters parameters,
-        IOptions<ToolsConfiguration> toolsConfiguration,
-        AssemblyToolService assemblyToolService,
-        ILoggerFactory loggerFactory)
+        IServiceProvider serviceProvider)
     {
+        var toolsConfiguration = serviceProvider.GetRequiredService<IOptions<ToolsConfiguration>>();
+        var assemblyToolService = serviceProvider.GetRequiredService<AssemblyToolService>();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger(typeof(AssemblyToolHandler));
         logger.LogInformation("Received request to retrieve assemblies list with {Parameters}", parameters);
 
