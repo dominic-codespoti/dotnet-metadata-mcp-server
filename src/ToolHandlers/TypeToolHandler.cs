@@ -1,39 +1,23 @@
-using System.Text.Json.Serialization.Metadata;
+using System.ComponentModel;
 using DotNetMetadataMcpServer.Configuration;
 using DotNetMetadataMcpServer.Models;
 using DotNetMetadataMcpServer.Services;
-using ModelContextProtocol.NET.Server.Features.Tools;
-using ModelContextProtocol.NET.Server.Session;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ModelContextProtocol.NET.Core.Models.Protocol.Client.Responses;
-using ModelContextProtocol.NET.Core.Models.Protocol.Common;
-using ModelContextProtocol.NET.Core.Models.Protocol.Shared.Content;
-using ModelContextProtocol.NET.Server.Contexts;
+using ModelContextProtocol.Server;
 
 namespace DotNetMetadataMcpServer.ToolHandlers;
 
-public class TypeToolHandler(
-    IServerContext serverContext,
-    ISessionFacade sessionFacade,
-    TypeToolService typeToolService, 
-    IOptions<ToolsConfiguration> toolsConfiguration,
-    ILogger<TypeToolHandler> logger
-) : ToolHandlerBase<TypeToolParameters>(tool, serverContext, sessionFacade)
+public static class TypeToolHandler
 {
-    private readonly ToolsConfiguration _toolsConfiguration = toolsConfiguration.Value;
-
-    private static readonly Tool tool = new()
+    [McpServerTool, Description("Retrieves types from specified namespaces supporting filters and pagination.")]
+    public static string HandleAsync(
+        [Description("The type tool parameters to use for the request")] TypeToolParameters parameters,
+        IOptions<ToolsConfiguration> toolsConfiguration,
+        TypeToolService typeToolService,
+        ILoggerFactory loggerFactory)
     {
-        Name = "NamespaceTypes",
-        Description = "Retrieves types from specified namespaces supporting filters and pagination.",
-        InputSchema = TypeToolParametersJsonContext.Default.TypeToolParameters.GetToolSchema<TypeToolParameters>()!
-    };
-
-    protected override Task<CallToolResult> HandleAsync(TypeToolParameters parameters, CancellationToken cancellationToken = default)
-    {
-        using var _ = logger.BeginScope("{TypeToolExecutionUid}", Guid.NewGuid());
-        logger.LogInformation("Received request to retrieve types with {@Parameters}", parameters);
+        var logger = loggerFactory.CreateLogger(typeof(TypeToolHandler));
+        logger.LogInformation("Received request to retrieve types with {Parameters}", parameters);
 
         TypeToolResponse result;
         try
@@ -43,24 +27,16 @@ public class TypeToolHandler(
                 allowedNamespaces: parameters.Namespaces.ToList(),
                 filters: parameters.FullTextFiltersWithWildCardSupport,
                 pageNumber: parameters.PageNumber,
-                pageSize: _toolsConfiguration.DefaultPageSize
+                pageSize: toolsConfiguration.Value.DefaultPageSize
             );
-
             logger.LogDebug("Types retrieved successfully: {@TypeToolResponse}", result);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error retrieving types");
+            logger.LogError(ex, "Error retrieving types for project {Path}", parameters.ProjectFileAbsolutePath);
             throw;
         }
-        
-        var json = _toolsConfiguration.IntendResponse
-            ? System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }) 
-            : System.Text.Json.JsonSerializer.Serialize(result);
 
-        var content = new TextContent { Text = json };
-        return Task.FromResult(new CallToolResult { Content = [content] });
+        return toolsConfiguration.Value.Serialize(result);
     }
-
-    public override JsonTypeInfo JsonTypeInfo => TypeToolParametersJsonContext.Default.TypeToolParameters;
 }

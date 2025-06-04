@@ -16,8 +16,7 @@ public class MsBuildHelper
     /// Loads .csproj via MSBuild, retrieves OutputPath, AssemblyName, TargetFramework.
     /// Searches for the compiled assembly (dll or exe), as well as project.assets.json.
     /// </summary>
-    public (string assemblyPath, string assetsFilePath, string targetFramework)
-        EvaluateProject(string csprojPath, string configuration = "Debug")
+    public (string assemblyPath, string assetsFilePath, string targetFramework) EvaluateProject(string csprojPath, string configuration = "Debug")
     {
         if (!File.Exists(csprojPath))
             throw new FileNotFoundException("CSProj not found", csprojPath);

@@ -26,7 +26,7 @@ jobs:
         id: set-version
         run: |
           # Extract version prefix from project file
-          VERSION_PREFIX=$(grep -oP '<VersionPrefix>\K[^<]+' DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj)
+          VERSION_PREFIX=$(grep -oP '<VersionPrefix>\\K[^<]+' src/MetadataMCP.Server.csproj)
           
           if [ -z "$VERSION_PREFIX" ]; then
             # Default version prefix if not found in project file
@@ -61,13 +61,13 @@ jobs:
 
       - name: Build
         run: |
-          dotnet publish DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
+          dotnet publish src/MetadataMCP.Server.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
 
       - name: Create zip archive
         run: |
           $VERSION = "${{ needs.build.outputs.version }}"
           $ZIP_NAME = "DotNetMetadataMcpServer-windows-x64-v$VERSION.zip"
-          Compress-Archive -Path DotNetMetadataMcpServer/bin/Release/net9.0/win-x64/publish/* -DestinationPath $ZIP_NAME
+          Compress-Archive -Path src/bin/Release/net9.0/win-x64/publish/* -DestinationPath $ZIP_NAME
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -92,14 +92,14 @@ jobs:
 
       - name: Build
         run: |
-          dotnet publish DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
+          dotnet publish src/MetadataMCP.Server.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
 
       - name: Create zip archive
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           ZIP_NAME="DotNetMetadataMcpServer-linux-x64-v$VERSION.zip"
-          cd DotNetMetadataMcpServer/bin/Release/net9.0/linux-x64/publish/
-          chmod +x DotNetMetadataMcpServer
+          cd src/bin/Release/net9.0/linux-x64/publish/
+          chmod +x MetadataMCP.Server
           zip -r ../../../../../../$ZIP_NAME *
 
       - name: Upload artifact
@@ -128,13 +128,13 @@ jobs:
 
       - name: Build
         run: |
-          dotnet publish DotNetMetadataMcpServer/DotNetMetadataMcpServer.csproj -c Release -r ${{ matrix.architecture }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
+          dotnet publish src/MetadataMCP.Server.csproj -c Release -r ${{ matrix.architecture }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true /p:DebugType=None /p:DebugSymbols=false /p:Version=${{ needs.build.outputs.version }} /p:AssemblyVersion=${{ needs.build.outputs.version }}
 
       - name: Create zip archive
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           ZIP_NAME="DotNetMetadataMcpServer-${{ matrix.architecture }}-v$VERSION.zip"
-          cd DotNetMetadataMcpServer/bin/Release/net9.0/${{ matrix.architecture }}/publish/
+          cd src/bin/Release/net9.0/${{ matrix.architecture }}/publish/
           zip -r ../../../../../../$ZIP_NAME *
 
       - name: Upload artifact
