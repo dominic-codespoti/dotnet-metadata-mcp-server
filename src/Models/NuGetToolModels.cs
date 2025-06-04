@@ -7,6 +7,13 @@ namespace DotNetMetadataMcpServer.Models
     {
         public required string SearchQuery { get; init; }
         public bool IncludePrerelease { get; init; } = false;
+
+        public override string ToString()
+        {
+            return $"SearchQuery: {SearchQuery}, " +
+                   $"IncludePrerelease: {IncludePrerelease}, " +
+                   $"FullTextFiltersWithWildCardSupport: [{string.Join(", ", FullTextFiltersWithWildCardSupport)}]";
+        }
     }
     
     [JsonSerializable(typeof(NuGetPackageSearchParameters))]

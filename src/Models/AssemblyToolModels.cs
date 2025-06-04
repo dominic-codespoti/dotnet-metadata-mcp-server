@@ -6,6 +6,12 @@ namespace DotNetMetadataMcpServer.Models
     public class AssemblyToolParameters : PagedRequestWithFilter
     {
         public required string ProjectFileAbsolutePath { get; init; }
+
+        public override string ToString()
+        {
+            return $"ProjectFileAbsolutePath: {ProjectFileAbsolutePath}, " +
+                   $"FullTextFiltersWithWildCardSupport: [{string.Join(", ", FullTextFiltersWithWildCardSupport)}]";
+        }
     }
     
     [JsonSerializable(typeof(AssemblyToolParameters))]

@@ -8,9 +8,16 @@ namespace DotNetMetadataMcpServer.Models
     {
         [Description("The absolute path to the project file.")]
         public required string ProjectFileAbsolutePath { get; init; }
-        
+
         [Description("The assembly names to filter by (without exe\\dll extension). If empty, all assemblies are considered.")]
         public IEnumerable<string> AssemblyNames { get; set; } = new List<string>();
+        
+        public override string ToString()
+        {
+            return $"ProjectFileAbsolutePath: {ProjectFileAbsolutePath}, " +
+                   $"AssemblyNames: [{string.Join(", ", AssemblyNames)}], " +
+                   $"FullTextFiltersWithWildCardSupport: [{string.Join(", ", FullTextFiltersWithWildCardSupport)}]";
+        }
     }
     
     [JsonSerializable(typeof(NamespaceToolParameters))]

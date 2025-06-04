@@ -41,27 +41,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Prerequisites
 
 - .NET 9.0 SDK or later
-- Docker (for containerized usage)
 - A .NET project that you want to explore
 
 ## Installation
-
-### Running with Docker
-
-1. Publish the project (required for Docker):
-   ```bash
-   dotnet publish -c Release -o ./src/bin/Release/net9.0/publish
-   ```
-2. Build the Docker image:
-   ```bash
-   docker build -t dotnetmetadatamcpserver .
-   ```
-3. Run the server:
-   ```bash
-   docker run --rm dotnetmetadatamcpserver
-   ```
-
-### Running Locally (without Docker)
 
 1. Clone the repository
 2. Build the project:

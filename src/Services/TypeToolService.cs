@@ -12,9 +12,7 @@ namespace DotNetMetadataMcpServer.Services
             _scanner = scanner;
         }
 
-        // Changed signature: now accepts a projectFileAbsolutePath and an allowed list of namespaces.
-        public TypeToolResponse GetTypes(string projectFileAbsolutePath, 
-            List<string> allowedNamespaces, List<string> filters, int pageNumber, int pageSize)
+        public TypeToolResponse GetTypes(string projectFileAbsolutePath, List<string> allowedNamespaces, List<string> filters, int pageNumber, int pageSize)
         {
             var metadata = _scanner.ScanProject(projectFileAbsolutePath);
             // Collect all types from project and dependencies.

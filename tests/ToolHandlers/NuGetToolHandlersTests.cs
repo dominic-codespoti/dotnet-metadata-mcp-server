@@ -5,6 +5,7 @@ using DotNetMetadataMcpServer.ToolHandlers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MetadataExplorerTest.ToolHandlers;
 
@@ -15,6 +16,7 @@ public class NuGetToolHandlersTests
     private NuGetToolService _nuGetToolService;
     private Mock<ILoggerFactory> _loggerFactoryMock;
     private ToolsConfiguration _toolsConfiguration;
+    private ServiceProvider _serviceProvider;
 
     [SetUp]
     public void Setup()
@@ -29,6 +31,19 @@ public class NuGetToolHandlersTests
         _nuGetToolService = new NuGetToolService(Mock.Of<ILogger<NuGetToolService>>());
         _loggerFactoryMock = new Mock<ILoggerFactory>();
         _loggerFactoryMock.Setup(f => f.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
+
+        // Setup DI
+        var services = new ServiceCollection();
+        services.AddSingleton<IOptions<ToolsConfiguration>>(_toolsConfigurationMock.Object);
+        services.AddSingleton<NuGetToolService>(_nuGetToolService);
+        services.AddSingleton<ILoggerFactory>(_loggerFactoryMock.Object);
+        _serviceProvider = services.BuildServiceProvider();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        _serviceProvider?.Dispose();
     }
 
     [Test]
@@ -44,9 +59,7 @@ public class NuGetToolHandlersTests
         // Act
         var result = await NuGetToolHandlers.NuGetPackageSearchHandleAsync(
             parameters,
-            _toolsConfigurationMock.Object,
-            _nuGetToolService,
-            _loggerFactoryMock.Object);
+            _serviceProvider);
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -66,9 +79,7 @@ public class NuGetToolHandlersTests
         // Act
         var result = await NuGetToolHandlers.NuGetPackageVersionsHandleAsync(
             parameters,
-            _toolsConfigurationMock.Object,
-            _nuGetToolService,
-            _loggerFactoryMock.Object);
+            _serviceProvider);
 
         // Assert
         Assert.That(result, Is.Not.Null);

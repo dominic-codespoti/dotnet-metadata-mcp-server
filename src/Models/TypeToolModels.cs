@@ -8,6 +8,13 @@ namespace DotNetMetadataMcpServer.Models
     {
         public required string ProjectFileAbsolutePath { get; init; }
         public IEnumerable<string> Namespaces { get; set; } = new List<string>();
+
+        public override string ToString()
+        {
+            return $"ProjectFileAbsolutePath: {ProjectFileAbsolutePath}, " +
+                   $"Namespaces: [{string.Join(", ", Namespaces)}], " +
+                   $"FullTextFiltersWithWildCardSupport: [{string.Join(", ", FullTextFiltersWithWildCardSupport)}]";
+        }
     }
     
     [JsonSerializable(typeof(TypeToolParameters))]
