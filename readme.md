@@ -41,9 +41,27 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Prerequisites
 
 - .NET 9.0 SDK or later
+- Docker (for containerized usage)
 - A .NET project that you want to explore
 
 ## Installation
+
+### Running with Docker
+
+1. Publish the project (required for Docker):
+   ```bash
+   dotnet publish -c Release -o ./src/bin/Release/net9.0/publish
+   ```
+2. Build the Docker image:
+   ```bash
+   docker build -t dotnetmetadatamcpserver .
+   ```
+3. Run the server:
+   ```bash
+   docker run --rm dotnetmetadatamcpserver
+   ```
+
+### Running Locally (without Docker)
 
 1. Clone the repository
 2. Build the project:
@@ -55,6 +73,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
    dotnet publish -c Release -r <runtime-identifier> --self-contained false
    ```
    Replace `<runtime-identifier>` with your target platform (e.g., `win-x64`, `linux-x64`, `osx-x64`).
+4. Run the server:
+   ```bash
+   dotnet ./src/bin/Release/net9.0/DotNetMetadataMcpServer.dll
+   ```
 
 ## Configuration
 
@@ -65,7 +87,7 @@ To use the .NET Types Explorer MCP Server with an AI agent, you need to configur
   "mcpServers": {
     "dotnet-types-explorer": {
       "command": "/path/to/DotNetMetadataMcpServer",
-      "args": [ "--homeEnvVariable", "/home/user" ],
+      "args": [],
       "disabled": false,
       "alwaysAllow": [],
       "timeout": 300
@@ -74,7 +96,7 @@ To use the .NET Types Explorer MCP Server with an AI agent, you need to configur
 }
 ```
 
-Replace `/path/to/DotNetMetadataMcpServer` with the actual path to the published executable, and `/home/user` with your home directory.
+Replace `/path/to/DotNetMetadataMcpServer` with the actual path to the published executable or Docker command.
 
 ## Important Limitations
 
@@ -93,7 +115,7 @@ The server provides five main tools that can be used by AI agents:
 
 This tool has been tested with the [Roo Code Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline), an AI coding assistant that supports the Model Context Protocol. You can find more information about Roo Code on [GitHub](https://github.com/RooVetGit/Roo-Code?tab=readme-ov-file).
 
-> It's possible to use `.clinerules` file to instruct your codding assistant to use the MCP server.
+> It's possible to use `.clinerules` file to instruct your coding assistant to use the MCP server.
 
 
 ## AI Code Assistant Instructions
